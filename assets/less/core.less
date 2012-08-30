@@ -52,7 +52,7 @@
 ::selection { background:#333; color:#F8F8F8; text-shadow:none; }
 
 html, body { -web-font-smoothing: antialiased; }
-body { font-family: arial, sans-serif; font-size: 14px; background: #F8F8F8 url(../img/body.bg.jpg) repeat 0px 0px scroll; }
+body { font-family: arial, sans-serif; font-size: 14px; background: #F8F8F8 url(../img/body.bg.jpg) repeat 0px 0px scroll; color: @c-copy; }
 
 
 ::-webkit-input-placeholder {}
@@ -113,21 +113,38 @@ input:indeterminate {} /* un-selected radio buttons :) */
 .person {
     /*border: 1px solid #BBB;*/
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-    z-index: 1;
+    z-index: 2;
     border-radius: 50%;
     width: 45px;
     height: 45px;
     background-repeat: no-repeat;
-    background-position: center center ;
+    background-position: center center;
+    background-color: #FFF;
+    background-size: 100%;
     float: left;
+    &.troll { background-size: 40px; }
     &.ui-draggable-dragging {
         background-color: #FFF;
         opacity: 0.8;
         cursor: move;
-        z-index:2;
+        z-index:3;
+        .name { opacity: 1; }
+    }
+    &:hover {
+        .name { opacity: 1; }
     }
 }
-
+.name {
+    position: absolute;
+    bottom: -20px;
+    width: 100px;
+    left: 50%;
+    z-index: 1;
+    margin-left: -50px;
+    text-align: center;
+    font-size: 10px;
+    opacity: 0;
+}
 
 /* ====================================================
     STATES STYLES
@@ -144,10 +161,18 @@ input:indeterminate {} /* un-selected radio buttons :) */
 .csstransitions {
 
     .person {
-        -webkit-transition: left 0.1s, top 0.1s, opacity .2s;
-        -moz-transition: left 0.1s, top 0.1s, opacity .2s;
-        -o-transition: left 0.1s, top 0.1s, opacity .2s;
-        transition: left 0.1s, top 0.1s, opacity .2s;
+        -webkit-transition: left 0.1s, top 0.1s, opacity .2s ease;
+        -moz-transition: left 0.1s, top 0.1s, opacity .2s ease;
+        -o-transition: left 0.1s, top 0.1s, opacity .2s ease;
+        -ms-transition: left 0.1s, top 0.1s, opacity .2s ease;
+        transition: left 0.1s, top 0.1s, opacity .2s ease;
+    }
+    .name {
+        -webkit-transition: opacity .2s ease;
+        -moz-transition: opacity .2s ease;
+        -o-transition: opacity .2s ease;
+        -ms-transition: opacity .2s ease;
+        transition: opacity .2s ease;
     }
 }
 

@@ -4,6 +4,65 @@
 $(function (Site) {
 
 	//
+	// Troll Class
+	//
+	// For thosse people who don't have twitter accounts
+	// =============================
+	//
+	var Troll = function (profile) {
+
+		profile = profile || {};
+
+		var troll = {
+
+			init: function () {
+
+				this._setup();
+
+			},
+
+			createAvatar: function () {
+				this.avatar = $('<div>');
+
+				this.avatar
+					.attr({
+						'class': 'person troll',
+						'data-id': this.id,
+						'data-posx': '',
+						'data-posy': ''
+					})
+					.css({
+						'background-image': 'url('+this.profileImg+')'
+					});
+
+				this.avatar.append('<span class="name">'+this.name+'</span>');
+			},
+
+			_setup: function () {
+				this.createAvatar();
+			},
+
+			_bindEvents: function () {
+
+			}
+
+		};
+
+
+		troll.profile = profile;
+		troll.id = profile.id || null;
+		troll.name = profile.name || 'Trololo';
+		troll.profileImg = profile.profileImg || 'http://s3.amazonaws.com/ragefaces/fed47e7ffa874d01b771474d2eef1a60.png';
+
+		troll.init();
+
+		return troll;
+
+	};
+
+
+
+	//
 	// Avatar Class
 	//
 	//
@@ -26,13 +85,15 @@ $(function (Site) {
 				this.avatar
 					.attr({
 						'class': 'person',
-						'data-id': profile.id,
+						'data-id': this.id,
 						'data-posx': '',
 						'data-posy': ''
 					})
 					.css({
 						'background-image': 'url('+this.profileImg+')'
 					});
+
+				this.avatar.append('<span class="name">'+this.name+'</span>');
 			},
 
 			_setup: function () {
@@ -69,24 +130,42 @@ $(function (Site) {
 		//
 		// getProfiles
 		//
-		// Fetching profiles from Twitter and creating new
+		// Fetching profiles from Twitter and creating new avatars.
+		// Ragefaces are used for those that don't have Twitter accounts
 		// =============================
 		//
 		getProfiles: function () {
 
 			var that = this,
-				uri = 'https://api.twitter.com/1/users/lookup.json?screen_name='+this.twitterList.join(',')+'&include_entities=true&callback=?',
+				twitterUri = 'https://api.twitter.com/1/users/lookup.json?screen_name='+this.twitterList.join(',')+'&include_entities=true&callback=?',
+				rageUri = 'http://ragefac.es/api/id/100?callback=?',
 				users = [];
 
-			$.getJSON(uri, function (response) {
+			$.getJSON(twitterUri, function (response) {
 				users = response;
 				users.forEach(function (profile) {
 					that.profiles.push(new Person(profile));
 				});
+
+				that.trollList.forEach(function (troll) {
+					that.profiles.push(new Troll(troll));
+				});
+
 				that.placePeopleInOffice();
 			});
+
+			// $.getJSON(rageUri, function (response) {
+			// 	console.log(response);
+			// 	// that.placePeopleInOffice();
+			// });
 		},
 
+		//
+		// placePeopleInOffice
+		//
+		// Literally just that
+		// =============================
+		//
 		placePeopleInOffice: function () {
 
 			var floor = this.floor;
@@ -98,6 +177,7 @@ $(function (Site) {
 			this.initDragging();
 
 		},
+
 
 
 		//
@@ -208,6 +288,18 @@ $(function (Site) {
 				'di_lucca',
 				'dggomes'
 			];
+
+			this.trollList = [
+				{
+					id: 001,
+					name: "Paul Lawton"
+				},
+				{
+					id: 002,
+					name: "Binki",
+					profileImg: 'http://s3.amazonaws.com/ragefaces/14af359aa586642a8fcd51119d829955.png'
+				}
+			]
 
 			this.floor = $("#floor");
 			this.people = [];
