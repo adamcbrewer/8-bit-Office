@@ -95,10 +95,9 @@ input:indeterminate {} /* un-selected radio buttons :) */
     Layouts hold one or more modules together.
 ==================================================== */
 
-#wrapper {  min-height: 800px; max-width: 1000px; margin: 100px auto; padding: 20px; border: 1px solid #DDD; border-radius: 4px; }
-#content {
-    &.dragging { cursor: move; }
-}
+#wrapper { max-width: 1000px; margin: 100px auto; }
+#content { margin: 20px; border: 1px solid #CCC; border-radius: 4px; padding: 10px; }
+#floor { width: 100%; height: 100%; min-height: 400px; }
 #people {
     position: relative;
 
@@ -113,25 +112,22 @@ input:indeterminate {} /* un-selected radio buttons :) */
 ==================================================== */
 .person {
     /*border: 1px solid #BBB;*/
-    position: absolute;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-    z-index: 2;
+    z-index: 1;
     border-radius: 50%;
-    &.dragging {
+    width: 45px;
+    height: 45px;
+    background-repeat: no-repeat;
+    background-position: center center ;
+    float: left;
+    &.ui-draggable-dragging {
         background-color: #FFF;
-        opacity: 0.5;
+        opacity: 0.8;
+        cursor: move;
+        z-index:2;
     }
-    > img { border-radius: 50%; max-width: 100%; }
 }
 
-.preview-holder {
-    z-index: 1;
-    list-style: none;
-    position: absolute;
-    background-color: #FFF;
-    border-radius: 50%;
-    opacity: 1;
-}
 
 /* ====================================================
     STATES STYLES

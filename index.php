@@ -95,7 +95,7 @@
 
 		<section role="main" id="content">
 
-			<div id="people" class="cf">
+			<div id="floor" class="cf">
 
 			</div>
 
@@ -126,7 +126,7 @@
 	</script>
 
 	<script src="assets/js/libs/jquery-1.8.0.min.js"></script>
-	<script src="assets/js/libs/jquery.gridster.min.js"></script>
+	<script src="assets/js/libs/jquery-ui-1.8.23.custom.min.js"></script>
 	<script src="assets/js/script.js"></script>
 
 	<script type="text/javascript">

@@ -18,7 +18,6 @@ $(function (Site) {
 			init: function () {
 
 				this._setup();
-				console.log(this);
 			},
 
 			createAvatar: function () {
@@ -28,7 +27,10 @@ $(function (Site) {
 					.attr({
 						'class': 'person'
 					})
-					.html('<img src="'+this.profileImg+'" />');
+					.css({
+						'background-image': 'url('+this.profileImg+')'
+					});
+					// .html('<img src="'+this.profileImg+'" />');
 			},
 
 			_setup: function () {
@@ -57,7 +59,6 @@ $(function (Site) {
 
 		init: function () {
 			this._setup();
-			this.initGrid();
 			this.getProfiles();
 		},
 
@@ -87,61 +88,31 @@ $(function (Site) {
 
 		placePeopleInOffice: function () {
 
-			var grid = this.grid,
-				row = 1,
-				col = 1;
+			var floor = this.floor;
 
 			this.people.forEach(function (person, i) {
-				grid.add_widget( person.avatar, 1, 1, ++i, row );
+				floor.append(person.avatar);
 			});
+
+			this.initDragging();
 
 		},
 
 
 		//
-		// initGrid
+		// initDragging
 		//
-		// Init the grid setup for moving avatars/people around the office
+		// Init the dragging functionality for each of the people
 		// =============================
 		//
-		initGrid: function () {
+		initDragging: function () {
 
-			this.grid = this.peopleGrid.gridster({
-				widget_margins: [10, 10],
-				widget_base_dimensions: [45, 45],
-				widget_selector: ".person",
-				min_rows: 200,
-				min_cols: 20,
+			this.draggable = this.floor.find('.person').draggable({
+				grid: [45, 45],
+				containment: 'parent'
+			}).data('draggable');
 
-				// dragging events
-				draggable: {
-					start: function(event, ui){
-
-					},
-					drag: function(event, ui){
-						// mouse moved during dragging
-					},
-					stop: function(event, ui){
-
-					}
-				},
-
-				//
-				collision: {
-					on_overlap_start: function (data) {
-						// when a widget enters a new grid cell
-					},
-					on_overlap: function (data) {
-						// each time a widget moves inside a grid cell
-					},
-					on_overlap_stop: function (data) {
-						// when a widget leaves its old grid cell
-					}
-				}
-
-			}).data('gridster');
-
-			// console.log(this.grid.serialize());
+			// console.log(this.draggable);
 
 		},
 
@@ -159,7 +130,7 @@ $(function (Site) {
 				'dggomes'
 			];
 
-			this.peopleGrid = $("#people");
+			this.floor = $("#floor");
 
 		}
 
