@@ -17,38 +17,6 @@ module.exports = function () {
 		},
 
 
-
-		//
-		// getProfiles
-		//
-		// Fetching profiles from Twitter and creating new avatars.
-		// Ragefaces are used for those that don't have Twitter accounts
-		// =============================
-		//
-		getProfiles: function () {
-
-			console.log(http);
-
-			// var that = this,
-			// 	twitterUri = 'https://api.twitter.com/1/users/lookup.json?screen_name='+this.twitterList.join(',')+'&include_entities=true&callback=?',
-			// 	rageUri = 'http://ragefac.es/api/id/100?callback=?',
-			// 	users = [];
-
-			// $.getJSON(twitterUri, function (response) {
-			// 	users = response;
-			// 	users.forEach(function (profile) {
-			// 		that.profiles.push(new Person(profile));
-			// 	});
-
-			// 	that.trollList.forEach(function (troll) {
-			// 		that.profiles.push(new Troll(troll));
-			// 	});
-
-			// 	that.placePeopleInOffice();
-			// });
-
-		},
-
 		//
 		// placePeopleInOffice
 		//
@@ -147,18 +115,6 @@ module.exports = function () {
 			});
 
 			// TODO: send to the server
-
-		},
-
-
-		_setup: function (peopleList) {
-
-			this.twitterList = peopleList.twitterList;
-			this.trollList = peopleList.trollList;
-
-			// this.floor = $("#floor");
-			this.people = [];
-			this.profiles = [];
 
 		}
 	};

@@ -6,6 +6,8 @@ var http = require('http'),
 
 	config = require(__dirname + '/config.js'),
 	Client = require(__dirname + '/models/client.js'),
+	Person = require(__dirname + '/models/person.js'),
+	Troll = require(__dirname + '/models/troll.js'),
 	server = express(),
 
 	serverInst = http.createServer(server),
@@ -142,7 +144,7 @@ var http = require('http'),
 		//
 		loadTemplate: function (templateFile) {
 
-			var source = fs.readFileSync('./view/'+ templateFile, 'utf8', function (err, html) {
+			var source = fs.readFileSync(__dirname + '/view/'+ templateFile, 'utf8', function (err, html) {
 				if (err) throw err;
 				return html;
 			});
@@ -194,12 +196,14 @@ var http = require('http'),
 						users = JSON.parse(jsonString),
 
 						users.forEach(function (profile) {
-							// that.profiles.push(new Person(profile));
+							that.profiles.push(new Person(profile));
 						});
 
 						that.trollList.forEach(function (troll) {
-							// that.profiles.push(new Troll(troll));
+							that.profiles.push(new Troll(troll));
 						});
+
+						console.log(that.profiles);
 
 						//	that.placePeopleInOffice();
 
