@@ -193,6 +193,28 @@ var http = require('http'),
 		},
 
 
+		updateProfilePosition: function (data, socket) {
+
+			var that = this;
+
+			this.profiles.forEach(function (profile) {
+				if (profile.id == data.id) {
+					profile.posx = data.posx;
+					profile.posy = data.posy;
+					that.updateClients(profile, socket);
+					return;
+				}
+			});
+
+		},
+
+
+		updateClients: function (profile, socket) {
+
+			socket.broadcast.emit('position-update', { profile: profile });
+
+		},
+
 
 		_setup: function (people) {
 
@@ -201,7 +223,6 @@ var http = require('http'),
 			this.trollList = people.trollList;
 
 			// name-spacing
-			this.people = [];
 			this.profiles = [];
 
 			// pre-compile the template for creating avatars for all the people
@@ -250,6 +271,11 @@ io.sockets.on('connection', function (socket) {
 	// Remove the client from the server conection stack
 	socket.on('disconnect', function () {
 		Server.destroyClient(socket.id);
+	});
+
+	// update the persons position
+	socket.on('position-update', function (data) {
+		Server.updateProfilePosition(data, socket);
 	});
 
 });

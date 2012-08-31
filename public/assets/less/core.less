@@ -25,6 +25,8 @@
 @c-bg: #FFF;
 @c-copy: #333;
 
+@f-fam-1: Monaco, Consolas;
+@f-fam-2: "Press Start 2P", cursive;
 
 
 
@@ -52,7 +54,7 @@
 ::selection { background:#333; color:#F8F8F8; text-shadow:none; }
 
 html, body { -web-font-smoothing: antialiased; }
-body { font-family: arial, sans-serif; font-size: 14px; background: #F8F8F8 url(../img/body.bg.jpg) repeat 0px 0px scroll; color: @c-copy; }
+body { font-family: @f-fam-1; font-size: 14px; line-heihgt: 1.4; background: #F8F8F8 url(../img/body.bg.jpg) repeat 0px 0px scroll; color: @c-copy; }
 
 
 ::-webkit-input-placeholder {}
@@ -95,9 +97,10 @@ input:indeterminate {} /* un-selected radio buttons :) */
     Layouts hold one or more modules together.
 ==================================================== */
 
-#wrapper { max-width: 1000px; margin: 100px auto; }
-#content { margin: 20px; border: 1px solid #CCC; border-radius: 4px; padding: 10px; }
-#floor { width: 100%; height: 100%; min-height: 400px; }
+#wrapper { }
+#header { padding: 20px 20px; }
+#content { margin: 20px; }
+#floor { width: 100%; height: 100%; min-height: 600px; border: 1px solid #CCC; border-radius: 4px; padding: 10px; }
 #people {
     position: relative;
 
@@ -145,13 +148,13 @@ input:indeterminate {} /* un-selected radio buttons :) */
 }
 .name {
     position: absolute;
-    bottom: -20px;
+    bottom: -30px;
     width: 100px;
     left: 50%;
     z-index: 1;
     margin-left: -50px;
     text-align: center;
-    font-size: 10px;
+    font-size: 0.7em;
     opacity: 0;
 }
 
@@ -184,7 +187,11 @@ input:indeterminate {} /* un-selected radio buttons :) */
         transition: opacity .2s ease;
     }
 }
-
+.fontface body {
+    font-family: @f-fam-2;
+    font-size: 12px;
+    line-height: 1.6;
+}
 
 
 /* ==|== Media Queries ======================================================

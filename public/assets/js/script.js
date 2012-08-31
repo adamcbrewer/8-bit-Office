@@ -77,17 +77,21 @@ $(function (App) {
 	//
 	App.updateProfile = function (person) {
 
+		var socket = this.socket;
+
 		this.profiles.forEach(function (profile) {
 			if (profile.id == person.getAttribute('data-id')) {
-				profile.data = {
-					x: person.getAttribute('data-posx'),
-					y: person.getAttribute('data-posy')
+				var data = {
+					id: profile.id,
+					posx: person.getAttribute('data-posx'),
+					posy: person.getAttribute('data-posy')
 				};
+				profile.posx = data.posx;
+				profile.posy = data.posy;
+				socket.emit('position-update', data );
+				return;
 			}
-			return;
 		});
-
-		// TODO: send to the server
 
 	};
 
@@ -113,21 +117,41 @@ $(function (App) {
 	};
 
 
+	App.moveAvatar = function (profile) {
+
+		var person = this.people.filter('[data-id="'+profile.id+'"]');
+		person
+			.attr({
+				'data-posx': profile.posx,
+				'data-posy': profile.posy
+			})
+			.css({
+				'left': profile.posy + 'px',
+				'top': profile.posx + 'px'
+			})
+
+	};
+
 
 
 	//
-	// broadcast
+	// Socket.io Listeners
 	//
-	// A general message function
 	// =========================================
 	//
+
+	// broadcast - A general messaging function
 	App.socket.on('broadcast', function (data) {
 		console.log(data);
 	});
-
+	// punch-in - When people have been received form the server
 	App.socket.on('punch-in', function (data) {
 		App.placePeopleOnFloor(data);
 	});
+	// position-update - Someone has made a position change, so we update this client
+	App.socket.on('position-update', function (data) {
+		App.moveAvatar(data.profile);
+	})
 
 
 }(App));
