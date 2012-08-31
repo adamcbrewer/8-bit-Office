@@ -123,12 +123,15 @@ input:indeterminate {} /* un-selected radio buttons :) */
     background-size: 100%;
     float: left;
     &.troll { background-size: 40px; }
-    &.ui-draggable-dragging {
+    &.dragging {
         background-color: #FFF;
         opacity: 0.8;
         cursor: move;
-        z-index:3;
+        z-index:5;
         .name { opacity: 1; }
+    }
+    &.last-drag {
+        z-index:4;
     }
     &:hover {
         .name { opacity: 1; }
