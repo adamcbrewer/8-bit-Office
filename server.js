@@ -4,8 +4,8 @@ var http = require('http'),
 	express = require('express'),
 	handlebars = require('handlebars'),
 
-	config = require('./config.js'),
-	Client = require('./models/client.js'),
+	config = require(__dirname + '/config.js'),
+	Client = require(__dirname + '/models/client.js'),
 	server = express(),
 
 	serverInst = http.createServer(server),
@@ -22,6 +22,11 @@ var http = require('http'),
 		clients: [],
 
 		init: function () {
+
+			this._setup(config.people);
+			this.getProfiles();
+
+			return this;
 
 		},
 
@@ -83,11 +88,11 @@ var http = require('http'),
 					// We can send the default 'all' data to eveybody if we don't
 					// specify anything specifically for the original client
 					var dataClient = data.client || data.all;
-					client.socket.emit('update stats', { results: dataClient });
+					client.socket.emit('broadcast', { results: data });
 				}
 
 				// Send to everyone
-				client.socket.broadcast.emit('update stats', { results: data.all });
+				client.socket.broadcast.emit('broadcast', { results: data });
 			}
 
 		},
@@ -144,7 +149,80 @@ var http = require('http'),
 
 			return source;
 
+		},
+
+
+
+
+		//
+		// getProfiles
+		//
+		// Fetching profiles from Twitter and creating new avatars.
+		// Ragefaces are used for those that don't have Twitter accounts
+		// =============================
+		//
+		getProfiles: function () {
+
+			var that = this,
+				// rageUri = 'http://ragefac.es/api/id/100?callback=?',
+				users = [];
+
+				// options for our HTTP request object
+				opts = {
+					host: 'api.twitter.com',
+					port: 443,
+					method: 'GET',
+					path: '/1/users/lookup.json?screen_name='+this.twitterList.join(',')+'&include_entities=true',
+					headers: {
+						'content-type': 'application/json'
+					}
+				};
+
+			https.request(opts, function(res) {
+
+				// console.log('STATUS: ' + res.statusCode);
+				// console.log('HEADERS: ' + JSON.stringify(res.headers));
+
+				res.setEncoding('utf8');
+
+				var jsonString = '',
+					users;
+				res.on('data', function (chunk) {
+						jsonString += chunk;
+					})
+					.on('end', function () {
+						users = JSON.parse(jsonString),
+
+						users.forEach(function (profile) {
+							// that.profiles.push(new Person(profile));
+						});
+
+						that.trollList.forEach(function (troll) {
+							// that.profiles.push(new Troll(troll));
+						});
+
+						//	that.placePeopleInOffice();
+
+					});
+
+			}).end();
+
+
+		},
+
+		_setup: function (people) {
+
+			this.twitterList = people.twitterList;
+			this.trollList = people.trollList;
+
+			// this.floor = $("#floor");
+			this.people = [];
+			this.profiles = [];
+
 		}
+
+
+
 
 	};
 
@@ -155,7 +233,7 @@ var http = require('http'),
 // to retreive the account changeset.
 serverInst.listen(config.serverPort);
 
-var publicDir = __dirname + 'public',
+var publicDir = __dirname + '/public',
 	assetsDir = publicDir + '/assets';
 
 // Route all our requested assets to the public assets directory
@@ -166,7 +244,8 @@ server.get('/*', function (req, res) {
 	var source = Server.loadTemplate('layout.tmpl'),
 		template = handlebars.compile(source),
 		view = template({
-			basePath: config.basePath
+			basePath: config.basePath,
+			siteurl: config.basePath + ':' + config.serverPort
 		});
 
 	res.send(view);
@@ -186,3 +265,5 @@ io.sockets.on('connection', function (socket) {
 	});
 
 });
+
+Server.init();

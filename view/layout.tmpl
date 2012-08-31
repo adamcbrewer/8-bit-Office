@@ -7,10 +7,10 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 
-	<link href="assets/css/reset.css" rel="stylesheet">
-	<link href="assets/css/core.css" rel="stylesheet">
+	<link href="{{ siteurl }}/assets/css/reset.css" rel="stylesheet">
+	<link href="{{ siteurl }}/assets/css/core.css" rel="stylesheet">
 
-	<script src="assets/js/lib/modernizr-2.6.1.min.js"></script>
+	<script src="{{ siteurl }}assets/js/lib/modernizr-2.6.1.min.js"></script>
 
 </head>
 <body>
@@ -37,20 +37,18 @@
 
 	</div> <!-- #wrapper -->
 
-	<script src="/socket.io/socket.io.js"></script>
+	<script src="{{ siteurl }}/socket.io/socket.io.js"></script>
 	<script>
 		var App = {
 			socket: io.connect('{{ basePath }}'),
-			channels: {
-				stats: io.connect('{{ basePath }}/stats')
-			},
-			basePath: '{{ basePath }}'
+			basePath: '{{ basePath }}',
+			siteurl: '{{ siteurl }}'
 		};
 
 	</script>
-	<script src="assets/js/libs/jquery-1.8.0.min.js"></script>
-	<script src="assets/js/libs/jquery-ui-1.8.23.custom.min.js"></script>
-	<script src="assets/js/script.js"></script>
+	<script src="{{ siteurl }}/assets/js/libs/jquery-1.8.0.min.js"></script>
+	<script src="{{ siteurl }}/assets/js/libs/jquery-ui-1.8.23.custom.min.js"></script>
+	<script src="{{ siteurl }}/assets/js/script.js"></script>
 
 </body>
 </html>
