@@ -117,12 +117,18 @@ input:indeterminate {} /* un-selected radio buttons :) */
     border-radius: 50%;
     width: 45px;
     height: 45px;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-color: #FFF;
-    background-size: 100%;
     float: left;
-    &.troll { background-size: 40px; }
+    position: relative;
+    .profile-img {
+        height: 100%;
+        width: 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-color: #FFF;
+        background-size: 100%;
+        border-radius: 50%;
+    }
+    &.troll .profile-img { background-size: 40px; }
     &.dragging {
         background-color: #FFF;
         opacity: 0.8;

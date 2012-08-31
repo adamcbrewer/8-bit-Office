@@ -44,6 +44,8 @@ var http = require('http'),
 			this.clients.push(client);
 			console.log('-- LOG: The connected clients are: ' + this.clients.length);
 
+			this.placePeopleInOffice(client);
+
 		},
 
 
@@ -95,40 +97,6 @@ var http = require('http'),
 
 				// Send to everyone
 				client.socket.broadcast.emit('broadcast', { results: data });
-			}
-
-		},
-
-
-		//
-		// render
-		//
-		// Takes a template file and a data object
-		// =========================================
-		//
-		render: function (tmpl, data, client) {
-
-			var source = this.loadTemplate(tmpl); // loads template
-				template = handlebars.compile(source), // compiles with data
-				commits = [],
-				numCommits = data.length,
-				i = 0,
-				that = this;
-
-			// Renders a new html element for each changeset
-			// and pushed to the stack.
-			for ( i; i < numCommits; i++ ) {
-				commits.push(
-					template(data[i])
-				);
-			}
-
-			if (client) {
-				this.sendCommitsToClient({ commits: commits.reverse() }, client);
-			} else {
-				this.clients.forEach(function (client, i) {
-					that.sendCommitsToClient({ commits: commits.reverse() }, client);
-				});
 			}
 
 		},
@@ -196,16 +164,12 @@ var http = require('http'),
 						users = JSON.parse(jsonString),
 
 						users.forEach(function (profile) {
-							that.profiles.push(new Person(profile));
+							that.profiles.push(new Person(profile, that.personTmpl));
 						});
 
 						that.trollList.forEach(function (troll) {
-							that.profiles.push(new Troll(troll));
+							that.profiles.push(new Troll(troll, that.personTmpl));
 						});
-
-						console.log(that.profiles);
-
-						//	that.placePeopleInOffice();
 
 					});
 
@@ -214,14 +178,34 @@ var http = require('http'),
 
 		},
 
+
+
+		//
+		// placePeopleInOffice
+		//
+		// Send the avatars to the connected client
+		// =============================
+		//
+		placePeopleInOffice: function (client) {
+
+			client.socket.emit('punch-in', { profiles: this.profiles });
+
+		},
+
+
+
 		_setup: function (people) {
 
+			// cache the list of usernames and accounts
 			this.twitterList = people.twitterList;
 			this.trollList = people.trollList;
 
-			// this.floor = $("#floor");
+			// name-spacing
 			this.people = [];
 			this.profiles = [];
+
+			// pre-compile the template for creating avatars for all the people
+			this.personTmpl = handlebars.compile(this.loadTemplate('partials/person.tmpl'));
 
 		}
 

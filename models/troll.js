@@ -4,37 +4,39 @@
 * A person that doesn't have an account with Twitter
 *
 **/
-module.exports = function (profile) {
+module.exports = function (profile, template) {
 
 	profile = profile || {};
+	template = template || false;
 
 	var troll = {
 
 		init: function () {
 
 			this._setup();
+			this.createAvatar();
 
 		},
 
 		createAvatar: function () {
-			// this.avatar = $('<div>');
-
-			// this.avatar
-			// 	.attr({
-			// 		'class': 'person troll',
-			// 		'data-id': this.id,
-			// 		'data-posx': '',
-			// 		'data-posy': ''
-			// 	})
-			// 	.css({
-			// 		'background-image': 'url('+this.profileImg+')'
-			// 	});
-
-			// this.avatar.append('<span class="name">'+this.name+'</span>');
+			this.avatar = template({
+				id: this.id,
+				name: this.name,
+				posx: this.posx,
+				posy: this.posy,
+				profileImg: this.profileImg
+			});
 		},
 
 		_setup: function () {
-			this.createAvatar();
+
+			this.profile = profile;
+			this.id = profile.id || null;
+			this.name = profile.name || 'Trololo';
+			this.posx = null;
+			this.posy = null;
+			this.profileImg = profile.profileImg || 'http://s3.amazonaws.com/ragefaces/fed47e7ffa874d01b771474d2eef1a60.png';
+
 		},
 
 		_bindEvents: function () {
@@ -42,12 +44,6 @@ module.exports = function (profile) {
 		}
 
 	};
-
-
-	troll.profile = profile;
-	troll.id = profile.id || null;
-	troll.name = profile.name || 'Trololo';
-	troll.profileImg = profile.profileImg || 'http://s3.amazonaws.com/ragefaces/fed47e7ffa874d01b771474d2eef1a60.png';
 
 	troll.init();
 

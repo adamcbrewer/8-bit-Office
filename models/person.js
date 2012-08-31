@@ -4,36 +4,37 @@
 * New one created for each person that has a Twitter account
 *
 **/
-module.exports = function (profile) {
+module.exports = function (profile, template) {
 
 	profile = profile || {};
+	template = template || false;
 
 	var person = {
 
 		init: function () {
-
 			this._setup();
+			this.createAvatar();
 		},
 
 		createAvatar: function () {
-			// this.avatar = $('<div>');
-
-			// this.avatar
-			// 	.attr({
-			// 		'class': 'person',
-			// 		'data-id': this.id,
-			// 		'data-posx': '',
-			// 		'data-posy': ''
-			// 	})
-			// 	.css({
-			// 		'background-image': 'url('+this.profileImg+')'
-			// 	});
-
-			// this.avatar.append('<span class="name">'+this.name+'</span>');
+			this.avatar = template({
+				id: this.id,
+				name: this.name,
+				posx: this.posx,
+				posy: this.posy,
+				profileImg: this.profileImg
+			});
 		},
 
 		_setup: function () {
-			this.createAvatar();
+
+			this.profile = profile;
+			this.id = profile.id;
+			this.name = profile.name;
+			this.posx = null;
+			this.posy = null;
+			this.profileImg = profile.profile_image_url;
+
 		},
 
 		_bindEvents: function () {
@@ -41,11 +42,6 @@ module.exports = function (profile) {
 		}
 
 	};
-
-	person.profile = profile;
-	person.id = profile.id;
-	person.name = profile.name;
-	person.profileImg = profile.profile_image_url;
 
 	person.init();
 
