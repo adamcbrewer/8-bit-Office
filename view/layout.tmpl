@@ -1,0 +1,56 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+
+	<title>8-bit Office</title>
+
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+
+	<link href="assets/css/reset.css" rel="stylesheet">
+	<link href="assets/css/core.css" rel="stylesheet">
+
+	<script src="assets/js/lib/modernizr-2.6.1.min.js"></script>
+
+</head>
+<body>
+
+	<div id="wrapper">
+
+		<header id="header">
+
+			<h1>8-bit Office</h1>
+
+		</header> <!-- #header -->
+
+		<section role="main" id="content">
+
+			<div id="floor" class="cf">
+
+			</div>
+
+		</section> <!-- #content -->
+
+		<footer id="footer">
+
+		</footer> <!-- #footer -->
+
+	</div> <!-- #wrapper -->
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		var App = {
+			socket: io.connect('{{ basePath }}'),
+			channels: {
+				stats: io.connect('{{ basePath }}/stats')
+			},
+			basePath: '{{ basePath }}'
+		};
+
+	</script>
+	<script src="assets/js/libs/jquery-1.8.0.min.js"></script>
+	<script src="assets/js/libs/jquery-ui-1.8.23.custom.min.js"></script>
+	<script src="assets/js/script.js"></script>
+
+</body>
+</html>
