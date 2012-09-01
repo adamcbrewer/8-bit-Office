@@ -22,6 +22,8 @@ var http = require('http'),
 		// =========================================
 		//
 		clients: [],
+		moveCount: 0,
+		profiles: [],
 
 		init: function () {
 
@@ -43,7 +45,7 @@ var http = require('http'),
 
 			this.clients.push(client);
 			console.log('-- LOG: The connected clients are: ' + this.clients.length);
-
+			this.broadcastStats({ connections: this.clients.length }, client, true);
 			this.placePeopleInOffice(client);
 
 		},
@@ -61,6 +63,7 @@ var http = require('http'),
 				if (id === client._key) {
 					that.clients.splice(i, 1);
 					console.log('-- LOG: The connected clients are: ' + that.clients.length);
+					that.broadcastStats({ connections: that.clients.length }, client, false);
 					return;
 				} else {
 					console.log('-- LOG: Couldn\'t find client with id: ' + id);
@@ -71,7 +74,7 @@ var http = require('http'),
 
 
 		//
-		// broadcast
+		// broadcastStats
 		//
 		// Takes the client object to use for emitting socket
 		// messages to all the clients connected.
@@ -80,7 +83,7 @@ var http = require('http'),
 		// can be specified to include the client in on the message we want to send.
 		// =========================================
 		//
-		broadcast: function (data, client, includeOrigin) {
+		broadcastStats: function (data, client, includeOrigin) {
 
 			includeOrigin = includeOrigin || false; // send the message to the original client as well?
 			data = data || {}; // the data we're sending to each of the clients
@@ -92,11 +95,11 @@ var http = require('http'),
 					// We can send the default 'all' data to eveybody if we don't
 					// specify anything specifically for the original client
 					var dataClient = data.client || data.all;
-					client.socket.emit('broadcast', { results: data });
+					client.socket.emit('update-stats', { results: data });
 				}
 
 				// Send to everyone
-				client.socket.broadcast.emit('broadcast', { results: data });
+				client.socket.broadcast.emit('update-stats', { results: data });
 			}
 
 		},
@@ -189,6 +192,7 @@ var http = require('http'),
 		placePeopleInOffice: function (client) {
 
 			client.socket.emit('punch-in', { profiles: this.profiles });
+			this.broadcastStats({ people: this.profiles.length }, client, true);
 
 		},
 
@@ -202,6 +206,8 @@ var http = require('http'),
 					profile.posx = data.posx;
 					profile.posy = data.posy;
 					that.updateClients(profile, socket);
+					that.moveCount++;
+					that.broadcastStats({ moves: that.moveCount }, null, true);
 					return;
 				}
 			});
@@ -221,9 +227,6 @@ var http = require('http'),
 			// cache the list of usernames and accounts
 			this.twitterList = people.twitterList;
 			this.trollList = people.trollList;
-
-			// name-spacing
-			this.profiles = [];
 
 			// pre-compile the template for creating avatars for all the people
 			this.personTmpl = handlebars.compile(this.loadTemplate('partials/person.tmpl'));

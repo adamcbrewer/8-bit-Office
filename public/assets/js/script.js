@@ -9,6 +9,7 @@ $(function (App) {
 	// =========================================
 	//
 	App.floor = $('#floor');
+	App.stats = $('#stats');
 
 
 	//
@@ -133,6 +134,13 @@ $(function (App) {
 	};
 
 
+	App.updateStats = function (data) {
+		var results = data.results;
+		if (results.connections) App.stats.find('[data-live="connections"]').html(results.connections);
+		if (results.moves) App.stats.find('[data-live="moves"]').html(results.moves);
+		if (results.people) App.stats.find('[data-live="people"]').html(results.people);
+	};
+
 
 	//
 	// Socket.io Listeners
@@ -140,10 +148,6 @@ $(function (App) {
 	// =========================================
 	//
 
-	// broadcast - A general messaging function
-	App.socket.on('broadcast', function (data) {
-		console.log(data);
-	});
 	// punch-in - When people have been received form the server
 	App.socket.on('punch-in', function (data) {
 		App.placePeopleOnFloor(data);
@@ -152,6 +156,8 @@ $(function (App) {
 	App.socket.on('position-update', function (data) {
 		App.moveAvatar(data.profile);
 	})
+	// update-stats - Output any statitcs the server is tracking
+	App.socket.on('update-stats', App.updateStats);
 
 
 }(App));
