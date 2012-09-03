@@ -12,27 +12,6 @@ module.exports = {
 
 	// List of people
 	people: {
-		twitterList: [
-			'adamcbrewer',
-			'mikemackay',
-			'natevan',
-			'NeilCarpenter',
-			'AsWeb85',
-			'gregfindon',
-			'di_lucca',
-			'dggomes'
-		],
-		trollList: [
-			{
-				id: '001',
-				name: "Paul Lawton"
-			},
-			{
-				id: '002',
-				name: "Binki",
-				profileImg: 'http://s3.amazonaws.com/ragefaces/14af359aa586642a8fcd51119d829955.png'
-			}
-		],
 		seatingPlan: [
 			{
 				firstname: "Adam",
@@ -59,9 +38,18 @@ module.exports = {
 				firstname: "Paul",
 				lastname: "Lawton",
 				twitter: false,
+				facebook: "plawton3",
 				posy: 450,
 				posx: 135
-			}
+			}//,
+			// {
+			// 	firstname: "Greg",
+			// 	lastname: "Findon",
+			// 	twitter: false,
+			// 	facebook: false,
+			// 	posy: 200,
+			// 	posx: 100
+			// }
 
 		]
 	}

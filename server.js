@@ -175,6 +175,55 @@ var http = require('http'),
 
 
 		//
+		// getTwitterProfile
+		//
+		// Fetching profiles from Twitter and pushing to the profiles stack.
+		// Ragefaces are used for those that don't have Twitter accounts
+		// =============================
+		//
+		getFacebookProfile: function (person) {
+
+			person = person || false;
+
+			var that = this,
+				profile,
+
+				// options for our HTTP request object
+				opts = {
+					host: 'graph.facebook.com',
+					port: 443,
+					method: 'GET',
+					path: '/' + person.facebook,
+					headers: {
+						'content-type': 'application/json'
+					}
+				};
+
+				https.request(opts, function(res) {
+
+					res.setEncoding('utf8');
+
+					var jsonString = '',
+						facebook;
+					res.on('data', function (chunk) {
+							jsonString += chunk;
+						})
+						.on('end', function () {
+							facebook = JSON.parse(jsonString),
+							person.facebook = facebook;
+							profile = new Person(person, that.personTmpl);
+							that.profiles.push(profile);
+							if (that.clients.length) that.placePersonInOffice(profile);
+						});
+
+				}).end();
+
+
+
+		},
+
+
+		//
 		// getProfiles
 		//
 		// This is a filter function for determining where
@@ -187,7 +236,11 @@ var http = require('http'),
 				users = [];
 
 			this.seatingPlan.forEach(function (person, i) {
-				if (person.twitter) that.getTwitterProfile(person);
+				if (person.twitter) {
+					that.getTwitterProfile(person);
+				} else if (person.facebook) {
+					that.getFacebookProfile(person);
+				}
 			});
 
 		},
@@ -219,6 +272,7 @@ var http = require('http'),
 		//
 		// NOTE: This function may be redundant
 		//
+
 		placePeopleInOffice: function (client) {
 
 			client.socket.emit('punch-in', { profiles: this.profiles });
@@ -255,8 +309,6 @@ var http = require('http'),
 		_setup: function (people) {
 
 			// cache the list of usernames and accounts
-			this.twitterList = people.twitterList;
-			this.trollList = people.trollList;
 			this.seatingPlan = people.seatingPlan;
 
 			// pre-compile the template for creating avatars for all the people

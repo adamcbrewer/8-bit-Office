@@ -30,7 +30,7 @@ module.exports = function (profile, template) {
 		_setup: function () {
 
 			// this.profile = profile;
-			this.id = profile.id || Math.floor(Math.random() * 10000);
+			this.id = profile.id || false;
 			this.name = profile.firstname + ' ' + profile.lastname;
 			this.firstname = profile.firstname;
 			this.lastname = profile.lastname;
@@ -42,7 +42,13 @@ module.exports = function (profile, template) {
 				this.profileImg = profile.twitter.profile_image_url;
 				if (!this.id) this.id = profile.twitter.id;
 				this.twitter = profile.twitter;
+			} else if (profile.facebook) {
+				this.profileImg = "https://graph.facebook.com/" + profile.facebook.id + '/picture';
+				this.id = profile.facebook.id;
+				this.facebook = profile.facebook;
 			}
+
+			if (!this.id) this.id = Math.floor(Math.random() * 10000);
 
 		}
 
