@@ -11,6 +11,11 @@ $(function (App) {
 	App.floor = $('#floor');
 	App.stats = $('#stats');
 
+	App.profiles = [];
+
+	// list of id's so we can quickly check if the person is already in the office
+	App.inOffice = [];
+
 
 	//
 	// initDragging
@@ -84,8 +89,9 @@ $(function (App) {
 			if (profile.id == person.getAttribute('data-id')) {
 				var data = {
 					id: profile.id,
-					posx: person.getAttribute('data-posx'),
-					posy: person.getAttribute('data-posy')
+					// why are these two swapped, but working correctly? o.0
+					posy: person.getAttribute('data-posx'),
+					posx: person.getAttribute('data-posy')
 				};
 				profile.posx = data.posx;
 				profile.posy = data.posy;
@@ -106,14 +112,18 @@ $(function (App) {
 	//
 	App.placePeopleOnFloor = function (data) {
 
-		this.profiles = data.profiles;
-
 		var that = this;
-		this.profiles.forEach(function (person, i) {
-			that.floor.append(person.avatar);
+		data.profiles.forEach(function (profile, i) {
+			if (that.inOffice.indexOf(profile.name) === -1) {
+				that.profiles.push(profile);
+				that.inOffice.push(profile.name);
+				that.floor.append(profile.avatar);
+			} else {
+				console.log(profile.name + ' is already at work');
+			}
 		});
 
-		this.initDragging();
+		if (!this.draggable) this.initDragging();
 
 	};
 
@@ -127,9 +137,9 @@ $(function (App) {
 				'data-posy': profile.posy
 			})
 			.css({
-				'left': profile.posy + 'px',
-				'top': profile.posx + 'px'
-			})
+				'left': profile.posx + 'px',
+				'top': profile.posy + 'px'
+			});
 
 	};
 
@@ -155,7 +165,7 @@ $(function (App) {
 	// position-update - Someone has made a position change, so we update this client
 	App.socket.on('position-update', function (data) {
 		App.moveAvatar(data.profile);
-	})
+	});
 	// update-stats - Output any statitcs the server is tracking
 	App.socket.on('update-stats', App.updateStats);
 

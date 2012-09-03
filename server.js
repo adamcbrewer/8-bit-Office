@@ -125,62 +125,90 @@ var http = require('http'),
 		},
 
 
-
-
 		//
-		// getProfiles
+		// getTwitterProfile
 		//
-		// Fetching profiles from Twitter and creating new avatars.
+		// Fetching profiles from Twitter and pushing to the profiles stack.
 		// Ragefaces are used for those that don't have Twitter accounts
 		// =============================
 		//
-		getProfiles: function () {
+		getTwitterProfile: function (person) {
+
+			person = person || false;
 
 			var that = this,
-				// rageUri = 'http://ragefac.es/api/id/100?callback=?',
-				users = [];
+				profile,
 
 				// options for our HTTP request object
 				opts = {
 					host: 'api.twitter.com',
 					port: 443,
 					method: 'GET',
-					path: '/1/users/lookup.json?screen_name='+this.twitterList.join(',')+'&include_entities=true',
+					path: '/1/users/lookup.json?include_entities=true&screen_name=' + person.twitter,
 					headers: {
 						'content-type': 'application/json'
 					}
 				};
 
-			https.request(opts, function(res) {
+				https.request(opts, function(res) {
 
-				// console.log('STATUS: ' + res.statusCode);
-				// console.log('HEADERS: ' + JSON.stringify(res.headers));
+					res.setEncoding('utf8');
 
-				res.setEncoding('utf8');
-
-				var jsonString = '',
-					users;
-				res.on('data', function (chunk) {
-						jsonString += chunk;
-					})
-					.on('end', function () {
-						users = JSON.parse(jsonString),
-
-						users.forEach(function (profile) {
-							that.profiles.push(new Person(profile, that.personTmpl));
+					var jsonString = '',
+						twitter;
+					res.on('data', function (chunk) {
+							jsonString += chunk;
+						})
+						.on('end', function () {
+							twitter = JSON.parse(jsonString)[0],
+							person.twitter = twitter;
+							profile = new Person(person, that.personTmpl);
+							that.profiles.push(profile);
+							if (that.clients.length) that.placePersonInOffice(profile);
 						});
 
-						that.trollList.forEach(function (troll) {
-							that.profiles.push(new Troll(troll, that.personTmpl));
-						});
+				}).end();
 
-					});
-
-			}).end();
 
 
 		},
 
+
+		//
+		// getProfiles
+		//
+		// This is a filter function for determining where
+		// to fetch the person's profile from.
+		// =============================
+		//
+		getProfiles: function () {
+
+			var that = this,
+				users = [];
+
+			this.seatingPlan.forEach(function (person, i) {
+				if (person.twitter) that.getTwitterProfile(person);
+			});
+
+		},
+
+
+		//
+		// placePersonInOffice
+		//
+		// Send a single avatar to the newly connected client
+		// =============================
+		//
+		placePersonInOffice: function (profile, client) {
+
+			if (client) {
+				client.socket.emit('punch-in', { profiles: [profile] });
+			} else {
+				this.clients[0].socket.broadcast.emit('punch-in', { profiles: [profile] });
+			}
+			this.broadcastStats({ people: this.profiles.length }, client, true);
+
+		},
 
 
 		//
@@ -188,6 +216,8 @@ var http = require('http'),
 		//
 		// Send the avatars to the connected client
 		// =============================
+		//
+		// NOTE: This function may be redundant
 		//
 		placePeopleInOffice: function (client) {
 
@@ -227,6 +257,7 @@ var http = require('http'),
 			// cache the list of usernames and accounts
 			this.twitterList = people.twitterList;
 			this.trollList = people.trollList;
+			this.seatingPlan = people.seatingPlan;
 
 			// pre-compile the template for creating avatars for all the people
 			this.personTmpl = handlebars.compile(this.loadTemplate('partials/person.tmpl'));
