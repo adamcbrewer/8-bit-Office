@@ -10,6 +10,9 @@ module.exports = {
 	serverPort: 8888,
 	basePath: 'http://localhost',
 
+	// grid dimentions
+	grid: [40, 40],
+
 	// List of people
 	people: {
 		seatingPlan: [
@@ -41,16 +44,7 @@ module.exports = {
 				facebook: "plawton3",
 				posy: 450,
 				posx: 135
-			}//,
-			// {
-			// 	firstname: "Greg",
-			// 	lastname: "Findon",
-			// 	twitter: false,
-			// 	facebook: false,
-			// 	posy: 200,
-			// 	posx: 100
-			// }
-
+			}
 		]
 	}
 };

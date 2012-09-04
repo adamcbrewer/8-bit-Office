@@ -154,6 +154,10 @@ var http = require('http'),
 
 					res.setEncoding('utf8');
 
+					// console.log(res.statusCode);
+					// console.log('\nTwitter Request');
+					// console.log(res.headers);
+
 					var jsonString = '',
 						twitter;
 					res.on('data', function (chunk) {
@@ -202,6 +206,10 @@ var http = require('http'),
 				https.request(opts, function(res) {
 
 					res.setEncoding('utf8');
+
+					// console.log(res.statusCode);
+					// console.log('\nFacebook Request');
+					// console.log(res.headers);
 
 					var jsonString = '',
 						facebook;
@@ -334,13 +342,14 @@ var publicDir = __dirname + '/public',
 // Route all our requested assets to the public assets directory
 server.use('/assets', express.static(assetsDir));
 
-server.get('/*', function (req, res) {
+server.get('/', function (req, res) {
 
 	var source = Server.loadTemplate('layout.tmpl'),
 		template = handlebars.compile(source),
 		view = template({
 			basePath: config.basePath,
-			siteurl: config.basePath + ':' + config.serverPort
+			siteurl: config.basePath + ':' + config.serverPort,
+			grid: config.grid
 		});
 
 	res.send(view);

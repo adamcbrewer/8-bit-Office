@@ -117,12 +117,11 @@ input:indeterminate {} /* un-selected radio buttons :) */
     They are the callouts, the sidebar sections, the product lists and so on.
 ==================================================== */
 .person {
-    /*border: 1px solid #BBB;*/
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
     z-index: 2;
     border-radius: 50%;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     position: absolute;
     .profile-img {
         height: 100%;
@@ -173,9 +172,8 @@ input:indeterminate {} /* un-selected radio buttons :) */
 
 
 .csstransitions {
-
     .person {
-        -webkit-transition: left 0.1s, top 0.1s, opacity .2s ease;
+        -webkit-transition: left 0.1s, top 0.1s, opacity .2s ease, scale 0.2 ease;
         -moz-transition: left 0.1s, top 0.1s, opacity .2s ease;
         -o-transition: left 0.1s, top 0.1s, opacity .2s ease;
         -ms-transition: left 0.1s, top 0.1s, opacity .2s ease;
@@ -187,6 +185,11 @@ input:indeterminate {} /* un-selected radio buttons :) */
         -o-transition: opacity .2s ease;
         -ms-transition: opacity .2s ease;
         transition: opacity .2s ease;
+    }
+}
+.csstransforms {
+    .person:target {
+        -webkit-transform: scale(1.2);
     }
 }
 .fontface body {
