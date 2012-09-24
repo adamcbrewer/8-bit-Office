@@ -125,7 +125,38 @@ $(function (App) {
 
 		if (!this.draggable) this.initDragging();
 
+		if (!App.hasKeynav) this.initKeynav();
+
 	};
+
+
+
+	App.initKeynav = function () {
+
+		var that = this;
+
+		this.currentPerson = false;
+		this.floor.on('mousedown', '.person', function (evt) {
+			that.currentPerson = $(this);
+		});
+		$(window).on('keydown', function (evt) {
+			var k = evt.keyCode;
+			console.log(k);
+			switch (k) {
+				case 37: // left
+					break;
+				case 38: // up
+					break;
+				case 39: // right
+					break;
+				case 40: // down
+					break;
+				default:
+					break;
+			}
+		});
+
+	},
 
 
 	App.moveAvatar = function (profile) {
@@ -150,6 +181,7 @@ $(function (App) {
 		if (results.moves) App.stats.find('[data-live="moves"]').html(results.moves);
 		if (results.people) App.stats.find('[data-live="people"]').html(results.people);
 	};
+
 
 
 	//
